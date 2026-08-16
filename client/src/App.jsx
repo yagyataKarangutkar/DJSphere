@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Clubs from './pages/Clubs';
+import ClubDetails from './pages/ClubDetails';
 import Events from './pages/Events';
 import EventDetails from './pages/EventDetails';
 import MyRegistrations from './pages/MyRegistrations';
@@ -35,6 +36,7 @@ export default function App() {
         {/* Public Discovery Routes */}
         <Route path="/" element={<Home />} />
         <Route path="/clubs" element={<Clubs />} />
+        <Route path="/clubs/:id" element={<ClubDetails />} />
         <Route path="/events" element={<Events />} />
         <Route path="/events/:id" element={<EventDetails />} />
 

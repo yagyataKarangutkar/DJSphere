@@ -7,6 +7,7 @@ import authRoutes from './routes/authRoutes.js';
 import homeRoutes from './routes/homeRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
 import eventRoutes from './routes/eventRoutes.js';
+import clubRoutes from './routes/clubRoutes.js';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 
 // Load environment variables
@@ -46,6 +47,9 @@ app.use('/api/admin', adminRoutes);
 
 // Event routes
 app.use('/api/events', eventRoutes);
+
+// Club routes
+app.use('/api/clubs', clubRoutes);
 
 // Error Handling Middleware
 app.use(notFound);

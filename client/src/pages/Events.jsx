@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { getEvents } from '../services/eventService';
 import { Calendar, MapPin, Search, Loader2, ArrowRight, ArrowLeft } from 'lucide-react';
 import Navbar from '../components/Navbar';
@@ -14,9 +14,10 @@ import roboticsImg from '../assets/robotics.jpg';
 
 export default function Events() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [events, setEvents] = useState([]);
   const [filteredEvents, setFilteredEvents] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState(searchParams.get('search') || '');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
