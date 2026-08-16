@@ -18,41 +18,42 @@ export const seedDatabase = async () => {
     }
 
     const eventCount = await Event.countDocuments();
-    if (eventCount === 0) {
-      console.log('Seeding database with mock DJSphere events...');
+    if (eventCount < 5) {
+      console.log('Seeding/Re-seeding database with mock DJSphere events...');
+      await Event.deleteMany({});
       const dummyCreatorId = new mongoose.Types.ObjectId('65d21a221f1d1d8c1c000000');
       await Event.insertMany([
         { 
           title: 'AI/ML Workshop', 
-          description: 'Introduction to Artificial Intelligence and Machine Learning algorithms.',
+          description: 'Hands-on workshop to explore the world of Artificial Intelligence and Machine Learning. Learn neural networks, model training, and Python libraries.',
           clubName: 'DJS CodeAI', 
           date: new Date('2026-08-24'), 
-          time: '3:00 PM',
-          venue: 'Seminar Hall',
-          category: 'Technical',
+          time: '4:00 PM - 7:00 PM',
+          venue: 'DJSCE, Seminar Hall',
+          category: 'Workshop',
           maxParticipants: 60, 
           registrationsCount: 45,
           createdBy: dummyCreatorId
         },
         { 
           title: 'CodeSprint 3.0', 
-          description: 'A 24-hour campus hackathon to build SaaS platforms.',
+          description: 'A 24-hour campus hackathon to build premium SaaS platforms. Collaborate, design, and code with fellow students.',
           clubName: 'DJS CSI', 
           date: new Date('2026-08-27'), 
-          time: '10:00 AM',
-          venue: 'B-Block Lab',
-          category: 'Technical',
+          time: '10:00 AM - 10:00 AM (Next Day)',
+          venue: 'DJSCE, Lab 101',
+          category: 'Competition',
           maxParticipants: 100, 
           registrationsCount: 83,
           createdBy: dummyCreatorId
         },
         { 
           title: 'Nritya - The Dance Fest', 
-          description: 'Annual inter-department solo and group dance showcase.',
+          description: 'Annual inter-department solo and group dance showcase. Where rhythm meets grace on the big stage.',
           clubName: 'DJS Synapse', 
           date: new Date('2026-08-30'), 
-          time: '5:30 PM',
-          venue: 'Auditorium',
+          time: '5:30 PM - 8:30 PM',
+          venue: 'DJSCE, Auditorium',
           category: 'Cultural',
           maxParticipants: 200, 
           registrationsCount: 65,
@@ -60,22 +61,37 @@ export const seedDatabase = async () => {
         },
         { 
           title: 'Career in Tech Talk', 
-          description: 'Interaction session with top campus alumni working in tech.',
+          description: 'Interaction session with top campus alumni working in tech giants. Get insights on roadmap planning and interviewing.',
           clubName: 'DJS Unicode', 
           date: new Date('2026-09-02'), 
-          time: '11:30 AM',
-          venue: 'Seminar Hall',
-          category: 'Seminar',
+          time: '11:30 AM - 1:30 PM',
+          venue: 'DJSCE, Room 304',
+          category: 'Talk',
           maxParticipants: 80, 
           registrationsCount: 32,
+          createdBy: dummyCreatorId
+        },
+        { 
+          title: 'Robotics Workshop', 
+          description: 'An intensive hands-on session on microcontroller circuits, sensor interfaces, and robotic assembly.',
+          clubName: 'DJS ACM SIGCHI', 
+          date: new Date('2026-09-05'), 
+          time: '2:00 PM - 5:00 PM',
+          venue: 'DJSCE, Robotics Lab',
+          category: 'Other',
+          maxParticipants: 50, 
+          registrationsCount: 12,
           createdBy: dummyCreatorId
         },
       ]);
     }
 
     const registrationCount = await Registration.countDocuments();
-    if (registrationCount === 0) {
-      console.log('Seeding database with mock DJSphere registrations...');
+    const firstReg = await Registration.findOne();
+    const needsRevertSeed = firstReg && (firstReg.branch || firstReg.rollNumber);
+    if (registrationCount === 0 || needsRevertSeed) {
+      console.log('Seeding/Re-seeding database with mock DJSphere registrations...');
+      await Registration.deleteMany({});
       await Registration.insertMany([
         { studentName: 'Yagyata Karangutkar', studentEmail: 'yagyata@gmail.com', eventName: 'AI/ML Workshop', clubName: 'DJS CodeAI', registeredOn: new Date('2026-08-14') },
         { studentName: 'Riya Shah', studentEmail: 'riya@gmail.com', eventName: 'AI/ML Workshop', clubName: 'DJS CodeAI', registeredOn: new Date('2026-08-14') },
