@@ -7,19 +7,19 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Clubs from './pages/Clubs';
 import Events from './pages/Events';
+import EventDetails from './pages/EventDetails';
 import MyRegistrations from './pages/MyRegistrations';
 import Profile from './pages/Profile';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from './components/AdminRoute';
+import AdminLayout from './pages/admin/AdminLayout';
+import Dashboard from './pages/admin/Dashboard';
+import AdminEvents from './pages/admin/AdminEvents';
+import AdminRegistrations from './pages/admin/AdminRegistrations';
+import AdminClubs from './pages/admin/AdminClubs';
+import AdminUsers from './pages/admin/AdminUsers';
 
-const AdminDashboard = () => (
-  <div className="min-h-screen bg-[#FCFAF8] p-8 font-sans">
-    <div className="max-w-4xl mx-auto bg-white rounded-3xl p-8 shadow-sm border border-slate-100">
-      <h1 className="text-2xl font-bold text-slate-900">Admin Control Panel</h1>
-      <p className="text-slate-500 mt-2">Manage campus clubs, events, and registrations.</p>
-    </div>
-  </div>
-);
+
 
 export default function App() {
   const dispatch = useDispatch();
@@ -36,6 +36,7 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/clubs" element={<Clubs />} />
         <Route path="/events" element={<Events />} />
+        <Route path="/events/:id" element={<EventDetails />} />
 
         {/* Public Authentication Routes */}
         <Route path="/login" element={<Login />} />
@@ -49,7 +50,14 @@ export default function App() {
 
         {/* Protected Admin Routes */}
         <Route element={<AdminRoute />}>
-          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route element={<AdminLayout />}>
+            <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
+            <Route path="/admin/dashboard" element={<Dashboard />} />
+            <Route path="/admin/events" element={<AdminEvents />} />
+            <Route path="/admin/registrations" element={<AdminRegistrations />} />
+            <Route path="/admin/clubs" element={<AdminClubs />} />
+            <Route path="/admin/users" element={<AdminUsers />} />
+          </Route>
         </Route>
 
         {/* Fallback Catch-all Route */}

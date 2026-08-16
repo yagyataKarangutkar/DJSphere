@@ -28,7 +28,10 @@ export default function Signup() {
   useEffect(() => {
     if (isAuthenticated && user) {
       navigate(
-        user.role === 'club_admin' || user.role === 'super_admin'
+        user.role === 'club_admin' || 
+        user.role === 'super_admin' || 
+        user.role === 'clubAdmin' || 
+        user.role === 'superAdmin'
           ? '/admin/dashboard'
           : '/'
       );
@@ -75,7 +78,10 @@ export default function Signup() {
       const u = result.payload;
 
       navigate(
-        u.role === 'club_admin' || u.role === 'super_admin'
+        u.role === 'club_admin' || 
+        u.role === 'super_admin' || 
+        u.role === 'clubAdmin' || 
+        u.role === 'superAdmin'
           ? '/admin/dashboard'
           : '/'
       );

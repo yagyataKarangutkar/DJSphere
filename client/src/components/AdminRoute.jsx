@@ -16,7 +16,12 @@ export default function AdminRoute() {
     );
   }
 
-  const isAdmin = user && (user.role === 'club_admin' || user.role === 'super_admin');
+  const isAdmin = user && (
+    user.role === 'club_admin' || 
+    user.role === 'super_admin' || 
+    user.role === 'clubAdmin' || 
+    user.role === 'superAdmin'
+  );
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;

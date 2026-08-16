@@ -21,11 +21,11 @@ export const authorizeRoles = (...roles) => {
 /**
  * Middleware allowing only club_admin or super_admin
  */
-export const adminMiddleware = authorizeRoles('club_admin', 'super_admin');
+export const adminMiddleware = authorizeRoles('club_admin', 'super_admin', 'clubAdmin', 'superAdmin');
 
 /**
  * Middleware allowing only super_admin
  */
-export const superAdminMiddleware = authorizeRoles('super_admin');
+export const superAdminMiddleware = authorizeRoles('super_admin', 'superAdmin');
 
 export default adminMiddleware;

@@ -41,6 +41,7 @@ export const signup = async (req, res, next) => {
         name: user.name,
         email: user.email,
         role: user.role,
+        clubName: user.clubName,
       });
     } else {
       return res.status(400).json({ message: 'Invalid user data provided' });
@@ -78,6 +79,7 @@ export const login = async (req, res, next) => {
         name: user.name,
         email: user.email,
         role: user.role,
+        clubName: user.clubName,
       });
     } else {
       // Return 401 for invalid credentials
@@ -114,6 +116,7 @@ export const getMe = async (req, res, next) => {
       name: req.user.name,
       email: req.user.email,
       role: req.user.role,
+      clubName: req.user.clubName,
     });
   } catch (error) {
     next(error);
