@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { logoutUser } from '../store/authSlice';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import { User, Ticket, Award, Edit, Lock, LogOut, Compass } from 'lucide-react';
+import { User, Ticket, Lock, LogOut, Edit, Trees, Compass } from 'lucide-react';
 
 export default function Profile() {
   const dispatch = useDispatch();
@@ -26,52 +26,52 @@ export default function Profile() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] flex flex-col font-sans text-slate-800">
+    <div className="min-h-screen bg-gradient-to-tr from-[#FAF5F5] via-[#FCFAF8] to-[#E3EEF0] flex flex-col font-sans selection:bg-[#4A9B68] selection:text-white">
       <Navbar />
 
-      <main className="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <main className="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-12">
         
         {/* Profile Card */}
-        <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm text-center space-y-6">
+        <div className="bg-white rounded-[28px] p-8 border border-slate-100 shadow-[0_15px_40px_rgba(0,0,0,0.03)] text-center space-y-6 max-w-xl mx-auto">
           
           {/* Avatar Graphic */}
-          <div className="w-24 h-24 rounded-full bg-emerald-600 text-white font-extrabold text-3xl flex items-center justify-center mx-auto shadow-md shadow-emerald-600/20">
+          <div className="w-24 h-24 rounded-full bg-[#E4F2EE] text-[#4A9B68] font-extrabold text-3xl flex items-center justify-center mx-auto shadow-md shadow-[#4A9B68]/5">
             {profileData.name.charAt(0).toUpperCase()}
           </div>
 
           <div>
             <h1 className="text-2xl font-black text-slate-900">{profileData.name}</h1>
             <p className="text-xs text-slate-400 font-medium mt-0.5">{profileData.email}</p>
-            <span className="inline-block mt-2 px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-bold">
+            <span className="inline-block mt-2 px-3 py-1 rounded-full bg-[#F1F5F9] text-slate-600 text-xs font-bold">
               {profileData.branchYear}
             </span>
           </div>
 
           {/* Stats Bar */}
-          <div className="grid grid-cols-3 gap-4 pt-6 border-t border-gray-100 max-w-lg mx-auto">
-            <div className="p-3 bg-slate-50 rounded-2xl border border-gray-100">
-              <span className="text-xl font-black text-emerald-600 block">{profileData.registeredEvents}</span>
+          <div className="grid grid-cols-3 gap-4 pt-6 border-t border-slate-100 max-w-lg mx-auto">
+            <div className="p-3 bg-[#FCFAF8] rounded-2xl border border-slate-100/50">
+              <span className="text-xl font-black text-[#4A9B68] block">{profileData.registeredEvents}</span>
               <span className="text-[11px] font-bold text-slate-500">Registered Events</span>
             </div>
-            <div className="p-3 bg-slate-50 rounded-2xl border border-gray-100">
-              <span className="text-xl font-black text-emerald-600 block">{profileData.clubsExplored}</span>
+            <div className="p-3 bg-[#FCFAF8] rounded-2xl border border-slate-100/50">
+              <span className="text-xl font-black text-[#4A9B68] block">{profileData.clubsExplored}</span>
               <span className="text-[11px] font-bold text-slate-500">Clubs Explored</span>
             </div>
-            <div className="p-3 bg-slate-50 rounded-2xl border border-gray-100">
-              <span className="text-xl font-black text-emerald-600 block">{profileData.certificates}</span>
+            <div className="p-3 bg-[#FCFAF8] rounded-2xl border border-slate-100/50">
+              <span className="text-xl font-black text-[#4A9B68] block">{profileData.certificates}</span>
               <span className="text-[11px] font-bold text-slate-500">Certificates</span>
             </div>
           </div>
 
           {/* Menu Actions */}
-          <div className="pt-6 border-t border-gray-100 max-w-md mx-auto space-y-2.5 text-left text-xs font-bold">
+          <div className="pt-6 border-t border-slate-100 max-w-md mx-auto space-y-2.5 text-left text-xs font-bold">
             <button className="w-full p-3.5 rounded-2xl bg-slate-50 hover:bg-slate-100 text-slate-700 transition flex items-center gap-3">
-              <Edit className="w-4 h-4 text-emerald-600" />
+              <Edit className="w-4 h-4 text-[#4A9B68]" />
               <span>Edit Profile</span>
             </button>
 
             <button className="w-full p-3.5 rounded-2xl bg-slate-50 hover:bg-slate-100 text-slate-700 transition flex items-center gap-3">
-              <Lock className="w-4 h-4 text-emerald-600" />
+              <Lock className="w-4 h-4 text-[#4A9B68]" />
               <span>Change Password</span>
             </button>
 
@@ -79,13 +79,13 @@ export default function Profile() {
               to="/my-registrations"
               className="w-full p-3.5 rounded-2xl bg-slate-50 hover:bg-slate-100 text-slate-700 transition flex items-center gap-3 block"
             >
-              <Ticket className="w-4 h-4 text-emerald-600" />
+              <Ticket className="w-4 h-4 text-[#4A9B68]" />
               <span>My Registrations</span>
             </Link>
 
             <button
               onClick={handleLogout}
-              className="w-full p-3.5 rounded-2xl bg-rose-50 hover:bg-rose-100 text-rose-600 transition flex items-center gap-3"
+              className="w-full p-3.5 rounded-2xl bg-[#FAF3F3] hover:bg-[#F6E8E8] text-[#EB6B56] transition flex items-center gap-3 cursor-pointer"
             >
               <LogOut className="w-4 h-4" />
               <span>Log Out</span>

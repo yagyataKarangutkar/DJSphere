@@ -2,26 +2,21 @@ import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { getMe } from './store/authSlice';
+import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import Clubs from './pages/Clubs';
+import Events from './pages/Events';
+import MyRegistrations from './pages/MyRegistrations';
+import Profile from './pages/Profile';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from './components/AdminRoute';
 
-// Placeholder views for protected route verification
-const StudentDashboard = () => (
-  <div className="min-h-screen bg-[#EEF2F5] p-8 font-sans">
-    <div className="max-w-4xl mx-auto bg-white rounded-3xl p-8 shadow-sm border border-gray-200">
-      <h1 className="text-2xl font-bold text-gray-900">Student Dashboard</h1>
-      <p className="text-gray-500 mt-2">Welcome to DJSphere Campus Portal.</p>
-    </div>
-  </div>
-);
-
 const AdminDashboard = () => (
-  <div className="min-h-screen bg-[#EEF2F5] p-8 font-sans">
-    <div className="max-w-4xl mx-auto bg-white rounded-3xl p-8 shadow-sm border border-gray-200">
-      <h1 className="text-2xl font-bold text-gray-900">Admin Control Panel</h1>
-      <p className="text-gray-500 mt-2">Manage campus clubs, events, and registrations.</p>
+  <div className="min-h-screen bg-[#FCFAF8] p-8 font-sans">
+    <div className="max-w-4xl mx-auto bg-white rounded-3xl p-8 shadow-sm border border-slate-100">
+      <h1 className="text-2xl font-bold text-slate-900">Admin Control Panel</h1>
+      <p className="text-slate-500 mt-2">Manage campus clubs, events, and registrations.</p>
     </div>
   </div>
 );
@@ -37,13 +32,19 @@ export default function App() {
   return (
     <Router>
       <Routes>
+        {/* Public Discovery Routes */}
+        <Route path="/" element={<Home />} />
+        <Route path="/clubs" element={<Clubs />} />
+        <Route path="/events" element={<Events />} />
+
         {/* Public Authentication Routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
 
         {/* Protected Student Routes */}
         <Route element={<ProtectedRoute />}>
-          <Route path="/" element={<StudentDashboard />} />
+          <Route path="/my-registrations" element={<MyRegistrations />} />
+          <Route path="/profile" element={<Profile />} />
         </Route>
 
         {/* Protected Admin Routes */}
