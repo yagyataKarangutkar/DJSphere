@@ -41,3 +41,9 @@ export const registerForEvent = async (id) => {
   const response = await api.post(`/events/${id}/register`);
   return response.data;
 };
+
+// Fetch currently logged-in student's registrations
+export const getMyRegistrations = async () => {
+  const response = await api.get('/events/my/registrations');
+  return response.data;
+};

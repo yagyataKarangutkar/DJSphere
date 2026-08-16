@@ -42,6 +42,9 @@ export const signup = async (req, res, next) => {
         email: user.email,
         role: user.role,
         clubName: user.clubName,
+        course: user.course,
+        year: user.year,
+        avatar: user.avatar,
       });
     } else {
       return res.status(400).json({ message: 'Invalid user data provided' });
@@ -80,6 +83,9 @@ export const login = async (req, res, next) => {
         email: user.email,
         role: user.role,
         clubName: user.clubName,
+        course: user.course,
+        year: user.year,
+        avatar: user.avatar,
       });
     } else {
       // Return 401 for invalid credentials
@@ -117,7 +123,72 @@ export const getMe = async (req, res, next) => {
       email: req.user.email,
       role: req.user.role,
       clubName: req.user.clubName,
+      course: req.user.course,
+      year: req.user.year,
+      avatar: req.user.avatar,
     });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Update user profile details
+// @route   PUT /api/auth/profile
+// @access  Private
+export const updateProfile = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    user.name = req.body.name || user.name;
+    user.course = req.body.course || user.course;
+    user.year = req.body.year || user.year;
+
+    const updatedUser = await user.save();
+
+    return res.json({
+      id: updatedUser._id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      role: updatedUser.role,
+      clubName: updatedUser.clubName,
+      course: updatedUser.course,
+      year: updatedUser.year,
+      avatar: updatedUser.avatar,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Update user password
+// @route   PUT /api/auth/password
+// @access  Private
+export const updatePassword = async (req, res, next) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ message: 'Please provide current and new passwords' });
+    }
+
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const isMatch = await user.matchPassword(currentPassword);
+    if (!isMatch) {
+      return res.status(401).json({ message: 'Incorrect current password' });
+    }
+
+    user.password = newPassword;
+    await user.save();
+
+    return res.json({ success: true, message: 'Password updated successfully' });
   } catch (error) {
     next(error);
   }

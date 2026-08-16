@@ -228,3 +228,24 @@ export const registerForEvent = async (req, res, next) => {
     next(error);
   }
 };
+
+// @desc    Get currently logged-in student's registrations
+// @route   GET /api/events/my/registrations
+// @access  Private
+export const getMyRegistrations = async (req, res, next) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({ message: 'Not authorized' });
+    }
+
+    const registrations = await Registration.find({ studentEmail: req.user.email }).sort({ createdAt: -1 });
+    
+    return res.status(200).json({
+      success: true,
+      count: registrations.length,
+      data: registrations,
+    });
+  } catch (error) {
+    next(error);
+  }
+};

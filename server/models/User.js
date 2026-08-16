@@ -29,6 +29,18 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
+    course: {
+      type: String,
+      default: 'B. Tech AIML',
+    },
+    year: {
+      type: String,
+      default: '2nd Year',
+    },
+    avatar: {
+      type: String,
+      default: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&q=80',
+    },
   },
   {
     timestamps: true,

@@ -9,7 +9,8 @@ import {
   getEventById, 
   updateEvent, 
   deleteEvent, 
-  registerForEvent 
+  registerForEvent,
+  getMyRegistrations
 } from '../controllers/eventController.js';
 
 const router = express.Router();
@@ -40,6 +41,7 @@ const optionalProtect = async (req, res, next) => {
 
 // Public Routes
 router.get('/', optionalProtect, getEvents);
+router.get('/my/registrations', protect, getMyRegistrations);
 router.get('/:id', getEventById);
 
 // Protected Admin Routes

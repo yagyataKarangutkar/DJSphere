@@ -5,7 +5,7 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { getClubById } from '../services/clubService';
 import { getEvents } from '../services/eventService';
-import { getClubLogo } from './Clubs';
+import { getClubLogo } from '../utils/logoHelper';
 
 // Import illustrations for Gallery
 import aiWorkshopImg from '../assets/ai_workshop.jpg';
@@ -35,7 +35,7 @@ export default function ClubDetails() {
           const eventsResponse = await getEvents();
           if (eventsResponse && eventsResponse.success) {
             const clubEvents = eventsResponse.data.filter(
-              (e) => e.clubName.toLowerCase() === clubResponse.data.name.toLowerCase()
+              (e) => e.clubName && clubResponse.data.name && e.clubName.toLowerCase() === clubResponse.data.name.toLowerCase()
             );
             setEvents(clubEvents);
           }
