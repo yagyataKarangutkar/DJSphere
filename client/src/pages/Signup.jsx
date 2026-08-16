@@ -91,7 +91,7 @@ export default function Signup() {
   const activeError = localError || error;
 
   return (
-    <div className="h-screen w-full bg-[#F0F4F2] flex items-center justify-center p-4 sm:p-6 lg:p-8 font-sans relative overflow-hidden selection:bg-[#4A9B68] selection:text-white">
+    <div className="min-h-screen py-16 flex flex-col justify-center w-full bg-[#F0F4F2] items-center p-4 sm:p-6 lg:p-8 font-sans relative overflow-hidden selection:bg-[#4A9B68] selection:text-white">
       
       {/* Branding Logo (Visible at the top left of the screen with subtle fade-in) */}
       <motion.div 

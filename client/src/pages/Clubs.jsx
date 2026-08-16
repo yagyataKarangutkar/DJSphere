@@ -214,7 +214,7 @@ export default function Clubs() {
 function ClubCard({ club, navigate }) {
   return (
     <div
-      onClick={() => navigate(`/clubs/${club._id}`)}
+      onClick={() => club?._id && navigate(`/clubs/${club._id}`)}
       className="bg-white rounded-3xl border border-slate-100 hover:border-[#4A9B68]/30 p-6 shadow-xs hover:shadow-md transition-all duration-200 cursor-pointer flex flex-col justify-between group active:scale-[0.99]"
     >
       <div className="space-y-4">

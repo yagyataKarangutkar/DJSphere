@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { getEventById, registerForEvent } from '../services/eventService';
+import { getClubs } from '../services/clubService';
 import { Calendar, MapPin, Tag, Users, Clock, ArrowLeft, Loader2, BookmarkCheck, CheckCircle2, Share2, ClipboardList } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -19,6 +20,7 @@ export default function EventDetails() {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
 
   const [event, setEvent] = useState(null);
+  const [matchedClub, setMatchedClub] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -33,6 +35,21 @@ export default function EventDetails() {
       const response = await getEventById(id);
       if (response && response.success) {
         setEvent(response.data);
+
+        // Fetch clubs to match by name
+        if (response.data.clubName) {
+          try {
+            const clubsRes = await getClubs();
+            if (clubsRes && clubsRes.success) {
+              const found = clubsRes.data.find(
+                (c) => c.name.toLowerCase() === response.data.clubName.toLowerCase()
+              );
+              setMatchedClub(found);
+            }
+          } catch (cErr) {
+            console.error('Failed to resolve club ID:', cErr);
+          }
+        }
       } else {
         setError('Failed to load event details.');
       }
@@ -304,10 +321,18 @@ export default function EventDetails() {
                     <MapPin className="w-4.5 h-4.5 text-slate-400 shrink-0" />
                     <span>{event.venue}</span>
                   </div>
-                  {/* Organizer */}
                   <div className="flex items-center gap-3">
                     <Users className="w-4.5 h-4.5 text-slate-400 shrink-0" />
-                    <span>Organized by {event.clubName}</span>
+                    {matchedClub ? (
+                      <button
+                        onClick={() => navigate(`/clubs/${matchedClub._id}`)}
+                        className="text-left font-black text-[#4A9B68] hover:text-[#3C8256] hover:underline cursor-pointer bg-transparent border-none p-0 outline-none transition-colors"
+                      >
+                        Organized by {event.clubName}
+                      </button>
+                    ) : (
+                      <span>Organized by {event.clubName}</span>
+                    )}
                   </div>
                   {/* Spots */}
                   <div className="flex items-center gap-3">

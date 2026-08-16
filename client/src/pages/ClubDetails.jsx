@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Loader2, Calendar, MapPin, Globe, Sparkles, Building, User2, Layers } from 'lucide-react';
+import { ArrowLeft, Loader2, Calendar, MapPin, Globe, Sparkles, Building, User2, Layers, Users } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { getClubById } from '../services/clubService';

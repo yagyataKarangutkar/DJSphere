@@ -6,6 +6,8 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import FloatingIslandCanvas from '../components/FloatingIslandCanvas';
 import { getHomeStats } from '../services/homeService';
+import { getEvents } from '../services/eventService';
+import { getClubs } from '../services/clubService';
 
 export default function Home() {
   const navigate = useNavigate();
@@ -15,10 +17,12 @@ export default function Home() {
     eventsCount: 40,
     studentsCount: 1200
   });
+  const [liveEvents, setLiveEvents] = useState([]);
+  const [liveClubs, setLiveClubs] = useState([]);
 
   React.useEffect(() => {
     let active = true;
-    const fetchStats = async () => {
+    const fetchStatsAndItems = async () => {
       try {
         const resData = await getHomeStats();
         if (active && resData && resData.success && resData.data) {
@@ -27,8 +31,23 @@ export default function Home() {
       } catch (err) {
         // Fallback silently
       }
+
+      try {
+        const [eventsRes, clubsRes] = await Promise.all([
+          getEvents(),
+          getClubs()
+        ]);
+        if (active && eventsRes && eventsRes.success) {
+          setLiveEvents(eventsRes.data.slice(0, 4));
+        }
+        if (active && clubsRes && clubsRes.success) {
+          setLiveClubs(clubsRes.data.slice(0, 4));
+        }
+      } catch (err) {
+        console.error('Error loading live homepage lists:', err);
+      }
     };
-    fetchStats();
+    fetchStatsAndItems();
     return () => {
       active = false;
     };
@@ -245,40 +264,75 @@ export default function Home() {
           variants={staggerContainer}
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
         >
-          {events.map((event, idx) => (
-            <frameMotion.div
-              key={idx}
-              variants={scrollFadeIn}
-              whileHover={{ y: -6 }}
-              className="bg-white rounded-3xl border border-slate-100/60 overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.03)] hover:shadow-[0_15px_40px_rgba(0,0,0,0.06)] hover:border-[#4A9B68]/20 transition-all duration-300 flex flex-col h-full"
-            >
-              {/* Event Card Thumbnail (3D art simulation) */}
-              <div className={`w-full h-40 bg-gradient-to-tr ${event.bgGrad} flex items-center justify-center p-6 relative overflow-hidden`}>
-                <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-white/90 text-[10px] font-bold tracking-wider uppercase shadow-sm" style={{ color: event.color }}>
-                  {event.category}
-                </div>
-                <event.icon className="w-12 h-12 stroke-[1.5]" style={{ color: event.color }} />
-              </div>
+          {(liveEvents.length > 0 ? liveEvents : events).map((event, idx) => {
+            const isLive = !!event._id;
+            const category = event.category || 'Event';
+            const title = event.title;
+            const dateStr = isLive 
+              ? `${new Date(event.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })} @ ${event.time || '10:00 AM'}`
+              : event.date;
+            const locationStr = isLive ? event.venue : event.location;
 
-              {/* Event Info */}
-              <div className="p-5 flex-1 flex flex-col justify-between">
-                <h3 className="text-base font-bold text-[#1E293B] mb-4 leading-snug line-clamp-1">
-                  {event.title}
-                </h3>
-                
-                <div className="space-y-2.5">
-                  <div className="flex items-center gap-2 text-xs text-[#64748B]">
-                    <CalendarDays className="w-4 h-4 text-slate-400 shrink-0" />
-                    <span className="font-medium line-clamp-1">{event.date}</span>
+            // Get dynamic visuals
+            const catLower = category.toLowerCase();
+            let bgGrad = 'from-[#fdf6e6] to-[#f7e0b5]';
+            let color = '#B4833E';
+            let Icon = Compass;
+
+            if (catLower.includes('ai') || catLower.includes('machine') || catLower.includes('workshop')) {
+              bgGrad = 'from-[#e3f4e8] to-[#c5e6ce]';
+              color = '#4A9B68';
+              Icon = BookOpen;
+            } else if (catLower.includes('code') || catLower.includes('hackathon') || catLower.includes('contest') || catLower.includes('competition')) {
+              bgGrad = 'from-[#fcedeb] to-[#f4d0cb]';
+              color = '#E05D52';
+              Icon = Sparkles;
+            } else if (catLower.includes('dance') || catLower.includes('cultural') || catLower.includes('music') || catLower.includes('festival')) {
+              bgGrad = 'from-[#f2edf8] to-[#dacfe8]';
+              color = '#8A5CF5';
+              Icon = Users;
+            }
+
+            return (
+              <frameMotion.div
+                key={event._id || idx}
+                variants={scrollFadeIn}
+                whileHover={{ y: -6 }}
+                onClick={() => {
+                  if (isLive) {
+                    navigate(`/events/${event._id}`);
+                  }
+                }}
+                className="bg-white rounded-3xl border border-slate-100/60 overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.03)] hover:shadow-[0_15px_40px_rgba(0,0,0,0.06)] hover:border-[#4A9B68]/20 transition-all duration-300 flex flex-col h-full cursor-pointer"
+              >
+                {/* Event Card Thumbnail (3D art simulation) */}
+                <div className={`w-full h-40 bg-gradient-to-tr ${bgGrad} flex items-center justify-center p-6 relative overflow-hidden`}>
+                  <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-white/90 text-[10px] font-bold tracking-wider uppercase shadow-sm" style={{ color: color }}>
+                    {category}
                   </div>
-                  <div className="flex items-center gap-2 text-xs text-[#64748B]">
-                    <MapPin className="w-4 h-4 text-slate-400 shrink-0" />
-                    <span className="font-medium line-clamp-1">{event.location}</span>
+                  <Icon className="w-12 h-12 stroke-[1.5]" style={{ color: color }} />
+                </div>
+
+                {/* Event Info */}
+                <div className="p-5 flex-1 flex flex-col justify-between">
+                  <h3 className="text-base font-bold text-[#1E293B] mb-4 leading-snug line-clamp-1">
+                    {title}
+                  </h3>
+                  
+                  <div className="space-y-2.5">
+                    <div className="flex items-center gap-2 text-xs text-[#64748B]">
+                      <CalendarDays className="w-4 h-4 text-slate-400 shrink-0" />
+                      <span className="font-medium line-clamp-1">{dateStr}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-xs text-[#64748B]">
+                      <MapPin className="w-4 h-4 text-slate-400 shrink-0" />
+                      <span className="font-medium line-clamp-1">{locationStr}</span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </frameMotion.div>
-          ))}
+              </frameMotion.div>
+            );
+          })}
         </frameMotion.div>
 
       </section>
@@ -333,25 +387,52 @@ export default function Home() {
           variants={staggerContainer}
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-6"
         >
-          {communities.map((club, idx) => (
-            <frameMotion.div
-              key={idx}
-              variants={scrollFadeIn}
-              whileHover={{ y: -5 }}
-              className="bg-white rounded-3xl border border-slate-100/60 overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.03)] hover:shadow-[0_15px_40px_rgba(0,0,0,0.06)] hover:border-[#4A9B68]/20 transition-all duration-300"
-            >
-              {/* Community 3D art simulation */}
-              <div className={`w-full h-36 bg-gradient-to-tr ${club.bgGrad} flex items-center justify-center p-6`}>
-                <club.icon className="w-10 h-10 text-[#4A9B68] stroke-[1.5]" />
-              </div>
+          {(liveClubs.length > 0 ? liveClubs : communities).map((club, idx) => {
+            const isLive = !!club._id;
+            const name = club.name;
+            const subtitle = isLive ? (club.subtitle || club.type) : club.tag;
 
-              {/* Info block */}
-              <div className="p-5">
-                <h3 className="text-base font-bold text-[#1E293B] mb-1">{club.name}</h3>
-                <p className="text-xs text-[#64748B] font-medium">{club.tag}</p>
-              </div>
-            </frameMotion.div>
-          ))}
+            // Get dynamic visuals
+            const lowerName = name.toLowerCase();
+            let bgGrad = 'from-[#edf2fb] to-[#cfdff8]';
+            let Icon = Compass;
+
+            if (lowerName.includes('codeai')) {
+              bgGrad = 'from-[#f7edf8] to-[#eccfe8]';
+              Icon = Users;
+            } else if (lowerName.includes('csi')) {
+              bgGrad = 'from-[#e3f4e8] to-[#c5e6ce]';
+              Icon = BookOpen;
+            } else if (lowerName.includes('ieee')) {
+              bgGrad = 'from-[#fcedeb] to-[#f4d0cb]';
+              Icon = Sparkles;
+            }
+
+            return (
+              <frameMotion.div
+                key={club._id || idx}
+                variants={scrollFadeIn}
+                whileHover={{ y: -5 }}
+                onClick={() => {
+                  if (isLive) {
+                    navigate(`/clubs/${club._id}`);
+                  }
+                }}
+                className="bg-white rounded-3xl border border-slate-100/60 overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.03)] hover:shadow-[0_15px_40px_rgba(0,0,0,0.06)] hover:border-[#4A9B68]/20 transition-all duration-300 cursor-pointer"
+              >
+                {/* Community 3D art simulation */}
+                <div className={`w-full h-36 bg-gradient-to-tr ${bgGrad} flex items-center justify-center p-6`}>
+                  <Icon className="w-10 h-10 text-[#4A9B68] stroke-[1.5]" />
+                </div>
+
+                {/* Info block */}
+                <div className="p-5">
+                  <h3 className="text-base font-bold text-[#1E293B] mb-1">{name}</h3>
+                  <p className="text-xs text-[#64748B] font-medium">{subtitle}</p>
+                </div>
+              </frameMotion.div>
+            );
+          })}
         </frameMotion.div>
 
       </section>
